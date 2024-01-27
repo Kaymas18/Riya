@@ -32,64 +32,64 @@ namespace simpleapp
         }
 
 
-        /*
-        private void btnlogin_Click_1(object sender, EventArgs e)
-        {       
+            /*
+            private void btnlogin_Click_1(object sender, EventArgs e)
+            {       
 
-            string username = txtusername.Text;
-            string password = txtpassword.Text;
-            string userType = "";
+                string username = txtusername.Text;
+                string password = txtpassword.Text;
+                string userType = "";
 
-            // Determine the selected user type based on the selected radio button
-            if (rbtnadmin.Checked)
-            {
-                userType = "Admin";
-            }
-            else if (rbtnemp.Checked)
-            {
-                userType = "User";
-            }
-
-
-            string ConnectionString = "Server=localhost;Database=nupurdb;User ID=root;Password=nupursqlgo;";
-
-            using (MySqlConnection connection = new MySqlConnection(ConnectionString))
-            {
-                connection.Open();
-
-                string query = "SELECT COUNT(*) FROM Users WHERE username = @username AND password = @password AND userType = @userType";
-                using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                // Determine the selected user type based on the selected radio button
+                if (rbtnadmin.Checked)
                 {
-                    cmd.Parameters.AddWithValue("@username", username);
-                    cmd.Parameters.AddWithValue("@password", password);
-                    cmd.Parameters.AddWithValue("@userType", userType);
-
-                    int count = Convert.ToInt32(cmd.ExecuteScalar());
-
-                    if (count > 0)
-                    {
-                        // Authentication successful
-                        if (userType == "Admin")
-                        {
-                            Form2 helloWorldForm = new Form2();
-                            helloWorldForm.Show();
-                        }
-                        else if (userType == "User")
-                        {
-                            MessageBox.Show("User login successful!");
-                        }
-                    }
-                    else
-                    {
-                        // Authentication failed
-                        MessageBox.Show("Invalid username, password, or user type. Please try again.");
-                    }
-
-
+                    userType = "Admin";
                 }
-            }
-        }*/
-    }
+                else if (rbtnemp.Checked)
+                {
+                    userType = "User";
+                }
+
+
+                string ConnectionString = "Server=localhost;Database=nupurdb;User ID=root;Password=nupursqlgo;";
+
+                using (MySqlConnection connection = new MySqlConnection(ConnectionString))
+                {
+                    connection.Open();
+
+                    string query = "SELECT COUNT(*) FROM Users WHERE username = @username AND password = @password AND userType = @userType";
+                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@username", username);
+                        cmd.Parameters.AddWithValue("@password", password);
+                        cmd.Parameters.AddWithValue("@userType", userType);
+
+                        int count = Convert.ToInt32(cmd.ExecuteScalar());
+
+                        if (count > 0)
+                        {
+                            // Authentication successful
+                            if (userType == "Admin")
+                            {
+                                Form2 helloWorldForm = new Form2();
+                                helloWorldForm.Show();
+                            }
+                            else if (userType == "User")
+                            {
+                                MessageBox.Show("User login successful!");
+                            }
+                        }
+                        else
+                        {
+                            // Authentication failed
+                            MessageBox.Show("Invalid username, password, or user type. Please try again.");
+                        }
+
+
+                    }
+                }
+            }*/
+        }
 }
 
 /*
