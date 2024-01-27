@@ -1,0 +1,170 @@
+using System;
+using System.Data.SqlClient;
+using System.Windows.Forms;
+
+public class LoginApp : Form
+{
+    private TextBox usernameField;
+    private TextBox passwordField;
+
+    public LoginApp()
+    {
+        Text = "Login Application";
+        Size = new System.Drawing.Size(400, 200);
+        FormBorderStyle = FormBorderStyle.FixedDialog;
+        StartPosition = FormStartPosition.CenterScreen;
+
+        // Create a panel for the image
+        var imagePanel = new FlowLayoutPanel();
+        var icon = new System.Drawing.Bitmap("c#/logo.png"); // Replace with the actual path to your image
+        var imageLabel = new PictureBox { Image = icon, SizeMode = PictureBoxSizeMode.AutoSize };
+        imagePanel.Controls.Add(imageLabel);
+
+        // Create login panel
+        var loginPanel = CreateLoginPanel();
+
+        // Create inventory panel (hidden initially)
+        var inventoryPanel = CreateInventoryPanel();
+        inventoryPanel.Visible = false;
+
+        // Create a container to hold both panels (imagePanel and loginPanel)
+        var container = Controls;
+        container.Add(imagePanel); // Placing image at the top
+        container.Add(loginPanel);
+
+        CenterToScreen();
+        Show();
+    }
+
+    private Panel CreateLoginPanel()
+    {
+        var panel = new Panel();
+        panel.Dock = DockStyle.Fill;
+
+        var userLabel = new Label { Text = "Username:" };
+        var passLabel = new Label { Text = "Password:" };
+
+        usernameField = new TextBox { Width = 150 };
+        passwordField = new TextBox { Width = 150, PasswordChar = '*' };
+
+        var loginButton = new Button { Text = "Login" };
+        loginButton.Click += (sender, e) =>
+        {
+            var username = usernameField.Text;
+            var password = passwordField.Text;
+
+            if (AuthenticateUser(username, password))
+            {
+                // Switch to inventory panel on successful login
+                SwitchToInventoryPanel();
+            }
+            else
+            {
+                MessageBox.Show("Invalid username or password", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        };
+
+        // Make text input fields less wide
+        panel.Controls.Add(userLabel);
+        panel.Controls.Add(usernameField);
+        panel.Controls.Add(passLabel);
+        panel.Controls.Add(passwordField);
+        panel.Controls.Add(loginButton);
+
+        return panel;
+    }
+
+    private Panel CreateInventoryPanel()
+    {
+        var panel = new Panel();
+        panel.Dock = DockStyle.Fill;
+
+        // Heading "Inventory"
+        var headingLabel = new Label { Text = "INVENTORY", Font = new System.Drawing.Font("Arial", 12, System.Drawing.FontStyle.Bold), TextAlign = ContentAlignment.MiddleCenter };
+        panel.Controls.Add(headingLabel);
+
+        // Panel for read and write options
+        var optionsPanel = new FlowLayoutPanel();
+
+        // Add components for inventory panel
+        var readButton = new Button { Text = "Read" };
+        var writeButton = new Button { Text = "Write" };
+
+        // Add action listeners for read and write buttons (implement actions accordingly)
+        readButton.Click += (sender, e) =>
+        {
+            // Implement read action
+            MessageBox.Show("Read action triggered!");
+        };
+
+        writeButton.Click += (sender, e) =>
+        {
+            // Implement write action
+            MessageBox.Show("Write action triggered!");
+        };
+
+        // Add components to the options panel
+        optionsPanel.Controls.Add(readButton);
+        optionsPanel.Controls.Add(writeButton);
+
+        // Add options panel to the center of the inventory panel
+        panel.Controls.Add(optionsPanel);
+
+        // "Download Excel File" button at the bottom right corner
+        var downloadExcelButton = new Button { Text = "Download Excel File" };
+        downloadExcelButton.Click += (sender, e) =>
+        {
+            // Implement download Excel action
+            MessageBox.Show("Download Excel action triggered!");
+        };
+        panel.Controls.Add(downloadExcelButton);
+
+        return panel;
+    }
+
+    private bool AuthenticateUser(string username, string password)
+    {
+        const string connectionString = "Data Source=localhost;Initial Catalog=nupurdb;User ID=root;Password=nupursqlgo";
+
+        using (var connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            const string sql = "SELECT * FROM users WHERE username = @username";
+            using (var command = new SqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue("@username", username);
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var hashedPasswordFromDB = reader["password"].ToString();
+                        // In a real-world scenario, you should use a proper password hashing library
+                        // for secure password handling. This is just a basic example.
+                        if (hashedPasswordFromDB == password)
+                        {
+                            return true; // Authentication successful
+                        }
+                    }
+                }
+            }
+        }
+
+        return false; // Authentication failed
+    }
+
+    private void SwitchToInventoryPanel()
+    {
+        Controls.Clear();
+        Controls.Add(CreateInventoryPanel());
+        Invalidate();
+        Refresh();
+    }
+
+    [STAThread]
+    public static void Main()
+    {
+        Application.EnableVisualStyles();
+        Application.SetCompatibleTextRenderingDefault(false);
+        Application.Run(new LoginApp());
+    }
+}
